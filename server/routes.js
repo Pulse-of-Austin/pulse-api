@@ -38,7 +38,6 @@ router.post('/categories',
 
 router.post('/perspectives', (req, res) => {
   console.log(req.body)
-  const { perTitle: title, perTopic: topic_id, perDets: rationale } = req.body;
   db('perspectives').insert({
     title,
     topic_id,
@@ -55,7 +54,6 @@ router.post('/perspectives', (req, res) => {
 
 router.post('/milestones', (req, res) => {
   console.log(req.body)
-  const { milTitle: title, milTopic: topic_id, milDets: description } = req.body;
   db('milestones').insert({
     title,
     topic_id,
@@ -72,7 +70,6 @@ router.post('/milestones', (req, res) => {
 
 router.post('/details', (req, res) => {
   console.log(req.body)
-  const { detailTitle: title, detailTopic: topic_id, detailsDetails: description, detailImage: image } = req.body;
   db('topic_details').insert({
     title,
     topic_id,
