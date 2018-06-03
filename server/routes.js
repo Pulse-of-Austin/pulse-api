@@ -18,13 +18,7 @@ function setRoutes (app) {
 
 router.post('/topic', (req, res) => {
   console.log(req.body)
-  const { topicTitle: title,
-    topicDesc: description,
-    topicDets: details,
-    topicDate: vote_date,
-    topicImage: image,
-    multi: categories,
-  } = req.body;
+  const { title, description, details, vote_date, image, categories } = req.body;
   db('topic').insert({
     title,
     description,
@@ -60,7 +54,6 @@ router.post('/categories', (req, res) => {
 
 router.post('/perspectives', (req, res) => {
   console.log(req.body)
-  const { perTitle: title, perTopic: topic_id, perDets: rationale } = req.body;
   db('perspectives').insert({
     title,
     topic_id,
@@ -77,7 +70,6 @@ router.post('/perspectives', (req, res) => {
 
 router.post('/milestones', (req, res) => {
   console.log(req.body)
-  const { milTitle: title, milTopic: topic_id, milDets: description } = req.body;
   db('milestones').insert({
     title,
     topic_id,
@@ -94,7 +86,6 @@ router.post('/milestones', (req, res) => {
 
 router.post('/details', (req, res) => {
   console.log(req.body)
-  const { detailTitle: title, detailTopic: topic_id, detailsDetails: description, detailImage: image } = req.body;
   db('topic_details').insert({
     title,
     topic_id,
