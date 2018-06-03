@@ -40,7 +40,7 @@ router.post('/topic', (req, res) => {
 })
 
 router.post('/categories', (req, res) => {
-  console.log(req.body)
+  console.log('categories:', req.body)
   const { category } = req.body;
   db('categories').insert({ category })
     .then(() => {

@@ -205,4 +205,4 @@ function runMigration(database) {
     });
 }
   
-  module.exports = { connect, migrate, db };
+//   module.exports = { connect, migrate, db };
