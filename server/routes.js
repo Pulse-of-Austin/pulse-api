@@ -1,6 +1,10 @@
 const express = require('express');
-const { db } = require('../database/index');
+const Joi = require('joi');
+const validator = require('express-joi-validation')({});
+
+const { db } = require('../database');
 const AuthModule = require('./auth');
+const CategoriesModule = require('./categories');
 
 const router = express.Router();
 
@@ -39,18 +43,21 @@ router.post('/topic', (req, res) => {
     })
 })
 
-router.post('/categories', (req, res) => {
-  console.log('categories:', req.body)
-  const { category } = req.body;
-  db('categories').insert({ category })
-    .then(() => {
-      res.sendStatus(201);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(401);
-    })
-})
+router.post('/categories',
+  AuthModule.authenticateAdminMiddleware,
+  validator.body(CategoriesModule.schema.keys({ id: Joi.forbidden() })),
+  (req, res) => {
+    console.log(req.body)
+    const category = req.body;
+    db('categories').insert(category)
+      .then(addedCategory => {
+        return res.json(addedCategory);
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).send(err);
+      })
+  })
 
 router.post('/perspectives', (req, res) => {
   console.log(req.body)

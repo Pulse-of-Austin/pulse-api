@@ -54,6 +54,7 @@ exports.up = function(knex, Promise) {
     ).then(
         () => {
             return createTable(knex, 'topic', table => {
+                table.string('title');
                 table.string('description');
                 table.string('details');
                 table.integer('vote_date');
@@ -70,7 +71,15 @@ exports.up = function(knex, Promise) {
     ).then(
         () => {
             return createTable(knex, 'poll', table => {
-                // Nothing
+                table.integer('a_votes');
+                table.string('a_Option');
+                table.integer('b_votes');
+                table.string('b_Option');
+                table.integer('c_votes');
+                table.string('c_Option');
+                table.integer('d_votes');
+                table.string('d_Option');
+                table.integer('topic_id').references('topic.id');
             }, {removeTs: true});
         }
     ).then(
@@ -97,6 +106,7 @@ exports.up = function(knex, Promise) {
     ).then(
         () => {
             return createTable(knex, 'perspectives', table => {
+                table.string('title');
                 table.integer('topic_id').references('topic.id');
                 table.string('rationale');
             }, {removeTs: true});
@@ -104,6 +114,7 @@ exports.up = function(knex, Promise) {
     ).then(
         () => {
             return createTable(knex, 'milestones', table => {
+                table.string('title');
                 table.integer('topic_id').references('topic.id');
                 table.string('description');
             }, {removeTs: true});

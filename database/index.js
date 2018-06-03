@@ -4,13 +4,11 @@ const AuthQueries = require('./auth.queries');
 
 module.exports = {
     db: dbContainer.db,
-    migrate: dbContainer.migrate,
     queries: {
         UserQueries,
         AuthQueries
     }
 }
-
 
 function runMigration(database) {
     return database.schema.hasTable('users').then((exists) => {
@@ -204,5 +202,3 @@ function runMigration(database) {
         });
     });
 }
-  
-//   module.exports = { connect, migrate, db };

@@ -1,7 +1,7 @@
-const dbContainer = require('./db-container');
+const { db } = require('./db-container');
 
 function signup (userData) {
-    return dbContainer.db('users').insert(userData);
+    return db('users').insert(userData);
 }
 
 module.exports = { signup };
