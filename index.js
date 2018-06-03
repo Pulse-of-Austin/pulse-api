@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-// const db = require('../database');
+const db = require('./database');
 
 const AuthModule = require('./auth');
 const Routes = require('./routes');
@@ -18,8 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 AuthModule.initialize(app);
 Routes.setRoutes(app);
 
-app.listen(port, () => {
-  console.log(`listening on port ${port}!`);
+db.connect();
+db.migrate(() => {
+  app.listen(port, () => {
+    console.log(`listening on port ${port}!`);
+  })
 });
 
 function setCORS (req, res, next) {

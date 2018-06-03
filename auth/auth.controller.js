@@ -1,17 +1,18 @@
 const passport = require('passport');
+var config = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require("passport-jwt");
-const JWTStrategy   = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;;
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
 const loginErrorMessage = 'The email or password was incorrect.';
-const secret = 'a872e724-5e5e-46e6-bd04-11756695f10c'; //TODO: Move to config file
+const jwtSecret = config.get('jwtSecret');
 
 const mockUser = {
   email: 'test@test.com',
-  password: bcrypt.hashSync('my-password', bcrypt.genSaltSync(10)),
+  password: bcrypt.hashSync('my-password', bcrypt.genSaltSync(12)),
   id: 1
 }; //TODO: Remove
 
@@ -41,7 +42,7 @@ function login (req, res, next) {
                     res.send(err);
                 }
 
-                const token = jwt.sign(user, secret, { expiresIn: 60 * 30 });
+                const token = jwt.sign(user, jwtSecret, { expiresIn: 60 * 30 });
 
                 return res.json({ user, token });
             })
@@ -82,7 +83,7 @@ function initialize (app) {
     ));
     passport.use(new JWTStrategy({
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-            secretOrKey   : secret
+            secretOrKey   : jwtSecret
         },
         (jwtPayload, done) => {
             findUserById(jwtPayload.id, (err, user) => {

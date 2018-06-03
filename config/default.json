@@ -1,0 +1,16 @@
+{
+    "jwtSecret": "a872e724-5e5e-46e6-bd04-11756695f10c",
+    "env": "development",
+    "knexConfig": {
+        "client": "pg",
+        "connection": {
+            "host": "127.0.0.1",
+            "user": "",
+            "password": "",
+            "database": "pulse"
+        },
+        "migrations": {
+            "tableName": "pulse_knex_migrations"
+        }
+    }
+}

@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "start": "npm run server-dev",
-    "server-dev": "nodemon server/index.js"
+    "start": "npm run server:dev",
+    "server:dev": "nodemon server/index.js",
+    "migrate:make": "knex --knexfile ./knexfile.js migrate:make",
+    "migrate:latest": "knex --knexfile ./knexfile.js migrate:latest"
   },
   "author": "Jake Lee",
   "license": "ISC",
@@ -18,11 +20,13 @@
     "babel-preset-react": "^6.24.1",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
+    "config": "^1.30.0",
     "dotenv": "^6.0.0",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.2",
     "knex": "^0.14.6",
+    "lodash": "^4.17.10",
     "nodemon": "^1.17.5",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
