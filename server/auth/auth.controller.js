@@ -14,20 +14,6 @@ const jwtSecret = config.get('jwtSecret');
 const dbContainer = require('../../database');
 const queries = dbContainer.queries;
 
-const mockUser = {
-  email: 'test@test.com',
-  password: bcrypt.hashSync('my-password', bcrypt.genSaltSync(12)),
-  id: 1
-}; //TODO: Remove
-
-// TODO: Get User from database
-function findUserById (id, callback) {
-    if (id === mockUser.id) {
-      return callback(null, mockUser);
-    }
-    return callback(null);
-}
-
 function signup(req, res) {
     const userData = req.body;
     return queries.UserQueries.getUserByEmail(userData.email).then(foundUser => {
@@ -48,19 +34,21 @@ function signup(req, res) {
 }
 
 function login (req, res, next) {
-    passport.authenticate('local', (err, user) => {
-        if (err || !user) {
-            return res.status(400).send("There was an unexpected error.");
+    passport.authenticate('local', (err, user, message) => {
+        if (err) {
+            return res.status(500).send(err);
+        } else if (!user) {
+            return res.status(401).send(message);
         } else {
             req.login(user, { session: false }, err => {
                 if (err) {
-                    res.send(err);
+                    res.status(500).send(err);
                 }
 
                 const token = jwt.sign(user, jwtSecret, { expiresIn: 60 * 60 * 24 });
 
-                return res.json({ user, token });
-            })
+                return res.json({ user: _.omit(user, ['password']), token });
+            });
         }
     })(req, res);
 }
@@ -100,12 +88,10 @@ function initialize (app) {
             secretOrKey   : jwtSecret
         },
         (jwtPayload, done) => {
-            findUserById(jwtPayload.id, (err, user) => {
-                if (err) {
-                    return done(err);
-                }
-
+            return queries.UserQueries.getUserById(jwtPayload.id).then(user => {
                 return done(null, user);
+            }).catch(err => {
+                return done(err);
             });
         }
     ));

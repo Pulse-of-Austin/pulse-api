@@ -11,4 +11,14 @@ function getUserByEmail (email) {
     return promiseObj;
 }
 
-module.exports = { getUserByEmail };
+function getUserById (id) { 
+    const promiseObj = new Promise(function(resolve, reject) {
+        dbContainer.db('users').where('id', id).then(users => {
+            resolve(_.head(users));
+        }).catch(reject);
+    });
+
+    return promiseObj;
+}
+
+module.exports = { getUserByEmail, getUserById };
