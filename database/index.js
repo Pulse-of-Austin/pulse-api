@@ -77,6 +77,7 @@ function runMigration(database) {
             table.string('description');
             table.string('details');
             table.integer('vote_date');
+            table.string('image');
             table.timestamp('created_at').notNullable().defaultTo(database.raw('now()'));
             table.timestamp('updated_at').notNullable().defaultTo(database.raw('now()'));
             })
@@ -179,6 +180,22 @@ function runMigration(database) {
                 console.log('Created milestones table');
                 })
                 .catch((err) => { console.error(err); });
+            }
+        });
+    })
+    .then(() => {
+        database.schema.hasTable('topic_details').then((exists) => {
+            if (!exists) {
+                database.schema.createTable('topic_details', (table) => {
+                    table.increments('id').primary();
+                    table.integer('topic_id').references('topic.id');
+                    table.string('image');
+                    table.string('description');
+                })
+                    .then(() => {
+                        console.log('Created topic_details table');
+                    })
+                    .catch((err) => { console.error(err); });
             }
         });
     });
