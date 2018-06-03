@@ -35,9 +35,8 @@ function getTopicById (id) {
                             .then((milestones) => {
                                 topic.milestones = milestones;
                                 return db('topic_details').where({ topic_id: id })
-                                    .then((details) => {
+                                    .then((topic_details) => {
                                         topic.topic_details = topic_details;
-                                        console.log(topic);
                                         resolve(topic);
                                     }).catch(reject);
                             }).catch(reject);

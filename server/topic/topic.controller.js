@@ -6,6 +6,7 @@ function addTopic(req, res) {
     return queries.TopicQueries.addTopic(topic).then(addedTopic => {
         return res.status(200).send();
     }).catch(err => {
+        console.error(err);
         return res.status(500).send(err);
     });
 }
@@ -13,11 +14,10 @@ function addTopic(req, res) {
 function getTopicById(req, res) {
     const { id } = req.params;
 
-    console.log(id);
-
     return queries.TopicQueries.getTopicById(id).then(topic => {
         return res.json(topic);
     }).catch(err => {
+        console.error(err);
         return res.status(500).send(err);
     });
 }
