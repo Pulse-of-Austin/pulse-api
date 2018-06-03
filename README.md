@@ -22,7 +22,8 @@ API of Pulse of Austin app.
         }
     }
 ```
-3. To run the server, use the command `npm run dev`
+3. Run the migration with the command `npm run migrate:latest:dev` to update your local database
+4. Run the server with the command `npm run dev`
 
 ## Launching an EC2 API Server
 

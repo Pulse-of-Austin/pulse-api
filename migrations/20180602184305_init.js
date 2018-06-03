@@ -16,6 +16,17 @@ function createTable (knex, tableName, columnCallback, opts) {
     });
 }
 
+function dropTable (knex, tableName) {
+    return knex.schema.hasTable(tableName).then(exists => {
+        if (exists) {
+            return knex.schema.dropTable(tableName).then(
+                () => { console.log(`Dropped ${tableName} table`); }
+            ).catch(err => console.error(err));
+        }
+        return;
+    });
+}
+
 
 exports.up = function(knex, Promise) {
     return createTable(knex, 'users', table => {
@@ -104,9 +115,31 @@ exports.up = function(knex, Promise) {
                 table.string('description');
             }, {removeTs: true});
         }
-    )
+    );
 };
 
 exports.down = function(knex, Promise) {
-  
+  return dropTable(knex, 'topic_details').then(
+        () => dropTable(knex, 'milestones')
+    ).then(
+        () => dropTable(knex, 'perspectives')
+    ).then(
+        () => dropTable(knex, 'user_pollVotes')
+    ).then(
+        () => dropTable(knex, 'user_topic')
+    ).then(
+        () => dropTable(knex, 'topic_poll')
+    ).then(
+        () => dropTable(knex, 'poll')
+    ).then(
+        () => dropTable(knex, 'topic_categories')
+    ).then(
+        () => dropTable(knex, 'topic')
+    ).then(
+        () => dropTable(knex, 'categories_users')
+    ).then(
+        () => dropTable(knex, 'categories')
+    ).then(
+        () => dropTable(knex, 'users')
+    );
 };
