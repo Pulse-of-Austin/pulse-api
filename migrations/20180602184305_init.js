@@ -33,7 +33,8 @@ exports.up = function(knex, Promise) {
         table.string('name');
         table.string('password');
         table.string('email').defaultTo(null).unique();
-        table.integer('zipcode');
+        table.string('role').defaultTo('user').notNull(),
+        table.string('zipcode');
         table.string('gender');
         table.integer('age');
         table.integer('income');

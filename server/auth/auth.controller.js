@@ -8,17 +8,19 @@ const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-const loginErrorMessage = 'The email or password was incorrect.';
-const jwtSecret = config.get('jwtSecret');
-
+const RolesModel = require('../user/roles.model');
 const dbContainer = require('../../database');
 const queries = dbContainer.queries;
+
+const loginErrorMessage = 'The email or password was incorrect.';
+const jwtSecret = config.get('jwtSecret');
 
 function signup(req, res) {
     const userData = req.body;
     return queries.UserQueries.getUserByEmail(userData.email).then(foundUser => {
         if (!foundUser) {
             userData.password = bcrypt.hashSync(userData.password, bcrypt.genSaltSync(12));
+            userData.role = RolesModel.USER;
             return queries.AuthQueries.signup(userData)
                 .then(user => {
                     return res.json(_.omit(user, ['password']));
@@ -53,8 +55,14 @@ function login (req, res, next) {
     })(req, res);
 }
 
-function authenticationMiddleware () {
-    return passport.authenticate('jwt', { session: false });
+function authenticateUserMiddleware (req, res, next) {
+    passport.authenticate('jwt', (err, user) => {
+        if (err || !user || user.role !== RolesModel.USER) {
+            return res.status(401).send("Unauthorized.");
+        }
+
+        return next();
+    })(req, res, next);
 }
 
 function initialize (app) {
@@ -101,6 +109,6 @@ function initialize (app) {
 module.exports = {
     login,
     signup,
-    authenticationMiddleware,
+    authenticateUserMiddleware,
     initialize
 };

@@ -4,7 +4,7 @@ const schema = require('./auth.schema');
 
 module.exports = {
     initialize: controller.initialize,
-    authenticationMiddleware: controller.authenticationMiddleware,
+    authenticateUserMiddleware: controller.authenticateUserMiddleware,
     routes,
     schema
 };
