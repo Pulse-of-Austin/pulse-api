@@ -14,15 +14,140 @@ function setRoutes (app) {
     app.use('/', router);
 }
 
+//######### ADMIN PORTAL ROUTES #################
+
 router.post('/topic', (req, res) => {
   console.log(req.body)
-  const { description, details, vote_date, image } = req.body;
-  return db('topic').insert({
+  const { topicTitle: title,
+    topicDesc: description,
+    topicDets: details,
+    topicDate: vote_date,
+    topicImage: image,
+    multi: categories,
+  } = req.body;
+  db('topic').insert({
+    title,
     description,
     details,
     vote_date,
     image,
-  });
+  }, 'id')
+    .then((topic_id) => {
+      console.log(topic_id);
+      categories.forEach(async (category_id) => {
+        await db('topic_categories').insert({ topic_id, category_id });
+      })
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(401);
+    })
+})
+
+router.post('/categories', (req, res) => {
+  console.log(req.body)
+  const { category } = req.body;
+  db('categories').insert({ category })
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(401);
+    })
+})
+
+router.post('/perspectives', (req, res) => {
+  console.log(req.body)
+  const { perTitle: title, perTopic: topic_id, perDets: rationale } = req.body;
+  db('perspectives').insert({
+    title,
+    topic_id,
+    rationale,
+  })
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(401);
+    })
+})
+
+router.post('/milestones', (req, res) => {
+  console.log(req.body)
+  const { milTitle: title, milTopic: topic_id, milDets: description } = req.body;
+  db('milestones').insert({
+    title,
+    topic_id,
+    description,
+  })
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(401);
+    })
+})
+
+router.post('/details', (req, res) => {
+  console.log(req.body)
+  const { detailTitle: title, detailTopic: topic_id, detailsDetails: description, detailImage: image } = req.body;
+  db('topic_details').insert({
+    title,
+    topic_id,
+    description,
+    image,
+  })
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(401);
+    })
+})
+
+// ########## GET ROUTES ################
+
+router.get('/caroselTopic?:number', (req, res) => {
+  const { number } = req.params;
+  db('topic').orderBy('updated_at').limit(number)
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+})
+
+router.get('/topic?:id', (req, res) => {
+  // will refactor for giant join table later... it's too early...
+  const { id } = req.params;
+  db('topic').where({ id })
+    .then((topic) => {
+      db('perspectives').where({ topic_id: id })
+        .then((perspectives) => {
+          db('milestones').where({ topic_id: id })
+            .then((milestones) => {
+              db('topic_details').where({ topic_id: id })
+                .then((details) => {
+                  const topicTotal = {
+                    topic,
+                    perspectives,
+                    milestones,
+                    details,
+                  }
+                  res.status(200).send(topicTotal);
+                })
+            })
+        })
+    })
+    .catch((err) => {
+      console.error(err);
+    })
 })
 
 function setCORS (req, res, next) {
