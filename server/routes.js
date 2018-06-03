@@ -1,5 +1,5 @@
 const express = require('express');
-
+const { db } = require('../database/index');
 const AuthModule = require('./auth');
 
 const router = express.Router();
@@ -13,6 +13,17 @@ function setRoutes (app) {
     app.all("/*", setCORS);
     app.use('/api', router);
 }
+
+router.post('/topic', (req, res) => {
+  console.log(req.body)
+  const { description, details, vote_date, image } = req.body;
+  return db('topic').insert({
+    description,
+    details,
+    vote_date,
+    image,
+  });
+})
 
 function setCORS (req, res, next) {
     // CORS headers

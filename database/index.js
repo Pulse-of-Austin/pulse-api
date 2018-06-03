@@ -188,6 +188,7 @@ function runMigration(database) {
             if (!exists) {
                 database.schema.createTable('topic_details', (table) => {
                     table.increments('id').primary();
+                    table.string('title');
                     table.integer('topic_id').references('topic.id');
                     table.string('image');
                     table.string('description');
@@ -201,5 +202,5 @@ function runMigration(database) {
     });
 }
   
-  module.exports = { connect, migrate };
+  module.exports = { connect, migrate, db };
   
