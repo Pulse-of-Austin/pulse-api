@@ -2,6 +2,7 @@ const passport = require('passport');
 var config = require('config');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
@@ -10,6 +11,9 @@ const ExtractJWT = passportJWT.ExtractJwt;
 const loginErrorMessage = 'The email or password was incorrect.';
 const jwtSecret = config.get('jwtSecret');
 
+const dbContainer = require('../../database');
+const queries = dbContainer.queries;
+
 const mockUser = {
   email: 'test@test.com',
   password: bcrypt.hashSync('my-password', bcrypt.genSaltSync(12)),
@@ -17,19 +21,30 @@ const mockUser = {
 }; //TODO: Remove
 
 // TODO: Get User from database
-function findUserByEmail (email, callback) {
-    if (email === mockUser.email) {
-      return callback(null, mockUser);
-    }
-    return callback(null);
-}
-
-// TODO: Get User from database
 function findUserById (id, callback) {
     if (id === mockUser.id) {
       return callback(null, mockUser);
     }
     return callback(null);
+}
+
+function signup(req, res) {
+    const userData = req.body;
+    return queries.UserQueries.getUserByEmail(userData.email).then(foundUser => {
+        if (!foundUser) {
+            userData.password = bcrypt.hashSync(userData.password, bcrypt.genSaltSync(12));
+            return queries.AuthQueries.signup(userData)
+                .then(user => {
+                    return res.json(_.omit(user, ['password']));
+                }).catch(err => {
+                    return res.status(500).send(err);
+                });
+        } else {
+            return res.status(500).json({ error: "An account with this email address already exists." });
+        }
+    }).catch(err => {
+        return res.status(500).send(err);
+    });
 }
 
 function login (req, res, next) {
@@ -42,7 +57,7 @@ function login (req, res, next) {
                     res.send(err);
                 }
 
-                const token = jwt.sign(user, jwtSecret, { expiresIn: 60 * 30 });
+                const token = jwt.sign(user, jwtSecret, { expiresIn: 60 * 60 * 24 });
 
                 return res.json({ user, token });
             })
@@ -58,10 +73,7 @@ function initialize (app) {
     passport.use(new LocalStrategy(
         {usernameField: 'email', passwordField: 'password', session: false}, 
         (email, password, done) => {
-            findUserByEmail(email, (err, user) => {
-                if (err) {
-                    return done(err);
-                }
+            return queries.UserQueries.getUserByEmail(email).then(user => {
 
                 // User not found
                 if (!user) {
@@ -78,6 +90,8 @@ function initialize (app) {
                     }
                     return done(null, user);
                 })
+            }).catch(err => {
+                return done(err);
             });
         }
     ));
@@ -100,6 +114,7 @@ function initialize (app) {
 
 module.exports = {
     login,
+    signup,
     authenticationMiddleware,
     initialize
 };
