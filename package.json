@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "dev": "cross-env NODE_ENV=development nodemon server/index.js",
-    "start": "cross-env NODE_ENV=staging nodemon server/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./index.js",
+    "start": "cross-env NODE_ENV=staging nodemon ./index.js",
+    "pm2:staging": "cross-env NODE_ENV=staging pm2 start ./index.js",
     "migrate:make:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:make",
     "migrate:latest:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:latest",
     "migrate:make": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:make",

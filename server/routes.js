@@ -11,7 +11,7 @@ router.use('/auth', AuthModule.routes);
 
 function setRoutes (app) {
     app.all("/*", setCORS);
-    app.use('/api', router);
+    app.use('/', router);
 }
 
 function setCORS (req, res, next) {
