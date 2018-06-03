@@ -6,7 +6,7 @@ let isConnected = false;
 function connect() {
     db = require('knex')({
         client: 'pg',
-        connection: config.get('databaseConfig')
+        connection: config.get('knexConfig.connection')
     });
 }
 

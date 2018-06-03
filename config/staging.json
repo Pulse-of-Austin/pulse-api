@@ -1,0 +1,15 @@
+{
+    "env": "staging",
+    "knexConfig": {
+        "client": "pg",
+        "connection": {
+            "host": "pulse-db-instance.c6uicdawqxdn.us-east-2.rds.amazonaws.com",
+            "user": "pulseadmin",
+            "password": "e814f19b76b0",
+            "database": "pulse"
+        },
+        "migrations": {
+            "tableName": "pulse_knex_migrations"
+        }
+    }
+}

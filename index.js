@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const db = require('./database');
 
-const AuthModule = require('./auth');
-const Routes = require('./routes');
+const AuthModule = require('./server/auth');
+const Routes = require('./server/routes');
 
 const app = express();
 
