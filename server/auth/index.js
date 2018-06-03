@@ -3,8 +3,7 @@ const routes = require('./auth.routes');
 const schema = require('./auth.schema');
 
 module.exports = {
-    initialize: controller.initialize,
-    authenticateUserMiddleware: controller.authenticateUserMiddleware,
+    ...controller,
     routes,
     schema
 };

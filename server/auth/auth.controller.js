@@ -57,7 +57,17 @@ function login (req, res, next) {
 
 function authenticateUserMiddleware (req, res, next) {
     passport.authenticate('jwt', (err, user) => {
-        if (err || !user || user.role !== RolesModel.USER) {
+        if (err || !user || (user.role !== RolesModel.USER && user.role !== RolesModel.ADMIN)) {
+            return res.status(401).send("Unauthorized.");
+        }
+
+        return next();
+    })(req, res, next);
+}
+
+function authenticateAdminMiddleware (req, res, next) {
+    passport.authenticate('jwt', (err, user) => {
+        if (err || !user || user.role !== RolesModel.ADMIN) {
             return res.status(401).send("Unauthorized.");
         }
 
@@ -110,5 +120,6 @@ module.exports = {
     login,
     signup,
     authenticateUserMiddleware,
+    authenticateAdminMiddleware,
     initialize
 };
