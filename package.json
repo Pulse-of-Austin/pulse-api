@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "start": "npm run server:dev",
-    "server:dev": "nodemon server/index.js",
-    "migrate:make": "knex --knexfile ./knexfile.js migrate:make",
-    "migrate:latest": "knex --knexfile ./knexfile.js migrate:latest"
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js",
+    "start": "cross-env NODE_ENV=staging nodemon server/index.js",
+    "migrate:make:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:make",
+    "migrate:latest:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:latest",
+    "migrate:make": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:make",
+    "migrate:latest": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:latest"
   },
   "author": "Jake Lee",
   "license": "ISC",
@@ -21,7 +23,6 @@
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "config": "^1.30.0",
-    "dotenv": "^6.0.0",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.2",
@@ -35,6 +36,7 @@
     "webpack": "^4.10.2"
   },
   "devDependencies": {
+    "cross-env": "^5.1.6",
     "webpack-cli": "^3.0.0"
   }
 }
