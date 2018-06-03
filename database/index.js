@@ -1,22 +1,13 @@
-const config = require('config');
+const dbContainer = require('./db-container');
+const UserQueries = require('./user.queries');
+const AuthQueries = require('./auth.queries');
 
-let db = null;
-let isConnected = false;
-
-function connect() {
-    db = require('knex')({
-        client: 'pg',
-        connection: config.get('knexConfig.connection')
-    });
-}
-
-function migrate(callback) {
-    try {
-        runMigration(db).then(() => {
-            callback();
-        });
-    } catch (e) {
-        throw "Database is not connected!";
+module.exports = {
+    db: dbContainer.db,
+    migrate: dbContainer.migrate,
+    queries: {
+        UserQueries,
+        AuthQueries
     }
 }
 
@@ -203,4 +194,3 @@ function runMigration(database) {
 }
   
   module.exports = { connect, migrate, db };
-  

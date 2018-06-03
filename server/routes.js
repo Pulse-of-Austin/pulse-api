@@ -5,13 +5,13 @@ const AuthModule = require('./auth');
 const router = express.Router();
 
 router.get('/test', (req, res) => res.json("Server is active."));
-router.get('/protected', AuthModule.authenticationMiddleware(), (req, res) => res.json("Got."));
+router.get('/protected', AuthModule.authenticateUserMiddleware, (req, res) => res.json("Got."));
 
 router.use('/auth', AuthModule.routes);
 
 function setRoutes (app) {
     app.all("/*", setCORS);
-    app.use('/api', router);
+    app.use('/', router);
 }
 
 router.post('/topic', (req, res) => {

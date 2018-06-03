@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const db = require('./database');
+const DbContainer = require('./database');
 
 const AuthModule = require('./server/auth');
 const Routes = require('./server/routes');
@@ -16,11 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 AuthModule.initialize(app);
 Routes.setRoutes(app);
 
-db.connect();
-db.migrate(() => {
-  app.listen(port, () => {
-    console.log(`listening on port ${port}!`);
-  })
+app.listen(port, () => {
+  console.log(`listening on port ${port}!`);
 });
 
 function setCORS (req, res, next) {

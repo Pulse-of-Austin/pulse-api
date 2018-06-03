@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "dev": "cross-env NODE_ENV=development nodemon server/index.js",
-    "start": "cross-env NODE_ENV=staging nodemon server/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./index.js",
+    "start": "cross-env NODE_ENV=staging nodemon ./index.js",
+    "pm2:staging": "cross-env NODE_ENV=staging pm2 start ./index.js",
     "migrate:make:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:make",
     "migrate:latest:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:latest",
+    "migrate:rollback:dev": "cross-env NODE_ENV=development knex --knexfile ./knexfile.js migrate:rollback",
     "migrate:make": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:make",
-    "migrate:latest": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:latest"
+    "migrate:latest": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:latest",
+    "migrate:rollback": "cross-env NODE_ENV=staging knex --knexfile ./knexfile.js migrate:rollback"
   },
   "author": "Jake Lee",
   "license": "ISC",
@@ -25,6 +28,8 @@
     "config": "^1.30.0",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
+    "express-joi-validation": "^0.2.1",
+    "joi": "^13.3.0",
     "jsonwebtoken": "^8.2.2",
     "knex": "^0.14.6",
     "lodash": "^4.17.10",
