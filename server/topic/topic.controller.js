@@ -10,6 +10,19 @@ function addTopic(req, res) {
     });
 }
 
+function getTopicById(req, res) {
+    const { id } = req.params;
+
+    console.log(id);
+
+    return queries.TopicQueries.getTopicById(id).then(topic => {
+        return res.json(topic);
+    }).catch(err => {
+        return res.status(500).send(err);
+    });
+}
+
 module.exports = {
-    addTopic
+    addTopic,
+    getTopicById
 }

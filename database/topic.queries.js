@@ -21,4 +21,33 @@ function addTopic (topic) {
     return promiseObj;
 }
 
-module.exports = { addTopic };
+function getTopicById (id) {
+    const promiseObj = new Promise(function(resolve, reject) {
+        db('topic').where({ id }).then((topics) => {
+            if (_.isEmpty(topics)) {
+                resolve(null);
+            } else {
+                const topic = _.head(topics);
+                return db('perspectives').where({ topic_id: id })
+                    .then((perspectives) => {
+                        topic.perspectives = perspectives;
+                        return db('milestones').where({ topic_id: id })
+                            .then((milestones) => {
+                                topic.milestones = milestones;
+                                return db('topic_details').where({ topic_id: id })
+                                    .then((details) => {
+                                        topic.topic_details = topic_details;
+                                        console.log(topic);
+                                        resolve(topic);
+                                    }).catch(reject);
+                            }).catch(reject);
+                    }).catch(reject);
+            }
+            
+        }).catch(reject);
+    });
+
+    return promiseObj;
+}
+
+module.exports = { addTopic, getTopicById };

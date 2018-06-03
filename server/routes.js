@@ -98,33 +98,6 @@ router.get('/caroselTopic?:number', (req, res) => {
     })
 })
 
-router.get('/topic?:id', (req, res) => {
-  // will refactor for giant join table later... it's too early...
-  const { id } = req.params;
-  db('topic').where({ id })
-    .then((topic) => {
-      db('perspectives').where({ topic_id: id })
-        .then((perspectives) => {
-          db('milestones').where({ topic_id: id })
-            .then((milestones) => {
-              db('topic_details').where({ topic_id: id })
-                .then((details) => {
-                  const topicTotal = {
-                    topic,
-                    perspectives,
-                    milestones,
-                    details,
-                  }
-                  res.status(200).send(topicTotal);
-                })
-            })
-        })
-    })
-    .catch((err) => {
-      console.error(err);
-    })
-})
-
 function setCORS (req, res, next) {
     // CORS headers
     res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain

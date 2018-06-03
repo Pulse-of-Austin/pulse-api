@@ -13,4 +13,10 @@ router.post(
     TopicController.addTopic
 );
 
+router.get(
+    '/:id',
+    AuthModule.authenticateUserMiddleware,
+    TopicController.getTopicById
+)
+
 module.exports = router;
