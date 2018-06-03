@@ -23,4 +23,4 @@ API of Pulse of Austin app.
         }
     }
 ```
-4. To run the server, use the command `npm run start`
+4. To run the server, use the command `npm run dev`
