@@ -23,7 +23,7 @@ function signup(req, res) {
             userData.role = RolesModel.USER;
             return queries.AuthQueries.signup(userData)
                 .then(user => {
-                    return res.json(_.omit(user, ['password']));
+                    return res.json(user);
                 }).catch(err => {
                     return res.status(500).send(err);
                 });

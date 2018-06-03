@@ -57,7 +57,7 @@ exports.up = function(knex, Promise) {
                 table.string('title');
                 table.string('description');
                 table.string('details');
-                table.integer('vote_date');
+                table.timestamp('vote_date');
                 table.string('image');
             });
         }

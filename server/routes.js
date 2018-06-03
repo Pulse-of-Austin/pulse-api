@@ -5,6 +5,7 @@ const validator = require('express-joi-validation')({});
 const { db } = require('../database');
 const AuthModule = require('./auth');
 const CategoriesModule = require('./categories');
+const TopicModule = require('./topic');
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get('/test', (req, res) => res.json("Server is active."));
 router.get('/protected', AuthModule.authenticateUserMiddleware, (req, res) => res.json("Got."));
 
 router.use('/auth', AuthModule.routes);
+router.use('/topic', TopicModule.routes);
 
 function setRoutes (app) {
     app.all("/*", setCORS);
@@ -19,41 +21,10 @@ function setRoutes (app) {
 }
 
 //######### ADMIN PORTAL ROUTES #################
-
-router.post('/topic', (req, res) => {
-  console.log(req.body)
-  const { topicTitle: title,
-    topicDesc: description,
-    topicDets: details,
-    topicDate: vote_date,
-    topicImage: image,
-    multi: categories,
-  } = req.body;
-  db('topic').insert({
-    title,
-    description,
-    details,
-    vote_date,
-    image,
-  }, 'id')
-    .then((topic_id) => {
-      console.log(topic_id);
-      categories.forEach(async (category_id) => {
-        await db('topic_categories').insert({ topic_id, category_id });
-      })
-      res.sendStatus(201);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(401);
-    })
-})
-
 router.post('/categories',
   AuthModule.authenticateAdminMiddleware,
   validator.body(CategoriesModule.schema.keys({ id: Joi.forbidden() })),
   (req, res) => {
-    console.log(req.body)
     const category = req.body;
     db('categories').insert(category)
       .then(addedCategory => {
