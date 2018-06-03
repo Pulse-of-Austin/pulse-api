@@ -3,9 +3,8 @@ API of Pulse of Austin app.
 
 ## Setup
 
-1. Install concurrently with the command `npm install -g concurrently`
-2. In your project root, use the command `npm install` to install the dependencies
-3. Add `development.json` in the `config` directory in this format:
+1. In your project root, use the command `npm install` to install the dependencies
+2. Add `development.json` in the `config` directory in this format:
 ```
     {
         "env": "development",
@@ -23,4 +22,4 @@ API of Pulse of Austin app.
         }
     }
 ```
-4. To run the server, use the command `npm run dev`
+3. To run the server, use the command `npm run dev`
